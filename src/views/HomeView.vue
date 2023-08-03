@@ -7,7 +7,7 @@
       <div class="mb-4">
         <h1 class="text-grey-darkest">Todo List</h1>
 
-        <form @submit.prevent="handleSubmit" class="flex mt-4">
+        <form @submit.prevent="addNewTodo" class="flex mt-4">
           <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
             placeholder="Add Todo" v-model="new_Todo">
           <button type="submit"
@@ -25,13 +25,16 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
+import { onMounted, ref, provide } from "vue"
 import TodoList from "../components/TodoList.vue"
 
 
 // Fetch data and load it to todo_list ref
 const todo_list = ref([])
+provide("todo_list", todo_list) // make it accessible to SingleItem for delete and update
+
 const error = ref(null)
+provide("error", error)
 
 onMounted(async () => {
   try {
@@ -49,18 +52,18 @@ onMounted(async () => {
 })
 
 
+
+
 // Add new todo item
 const new_Todo = ref("")
 
-const handleSubmit = async () => {
+const addNewTodo = async () => {
   if (new_Todo.value !== '') {
     try {
       const res = await fetch("http://localhost:3000/todoitems", {
         method: "POST",
-        mode: "cors",
         headers: {
           "Content-Type": "application/json",
-
         },
         // remember to stringify before sending
         body: JSON.stringify({ 'todo_item': new_Todo.value })
@@ -84,5 +87,7 @@ const handleSubmit = async () => {
     }
   }
 }
+
+
 
 </script>

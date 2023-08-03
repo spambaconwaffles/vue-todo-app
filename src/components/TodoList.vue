@@ -1,7 +1,6 @@
 <template>
     <ul v-for="item in todo_list" :key="item.id">
-        <SingleItem :todo_item="item"/>
-
+        <SingleItem :todo_item="item" />
     </ul>
 </template>
 
