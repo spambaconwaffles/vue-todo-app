@@ -1,18 +1,30 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    
+    
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+<script setup>
+import { onMounted, ref } from "vue"
 
-export default {
-  name: 'HomeView',
-  components: {
-    HelloWorld
-  }
-}
+const todo_items = ref([])
+const error = ref(null)
+
+
+onMounted(async () => {
+    try {
+        let data = await fetch("http://localhost:3000/todoitems")
+        if (!data.ok) {
+            throw Error("No data available")
+        }
+        todo_items.value = await data.json()
+        // console.log(todo_items.value)
+    }
+    catch (err) {
+        error.value = err.message
+        console.log(error.value)
+    }
+})
+
 </script>
