@@ -1,6 +1,6 @@
 <template>
     <li class="flex mb-4 items-center">
-        <p class="w-full text-grey-darkest">{{ snippet }}</p>
+        <p class="w-full text-grey-darkest truncate ...">{{ snippet }}</p>
         <!-- <button
             class="flex-no-shrink p-2 ml-4 mr-2 border-2 rounded hover:text-white text-green-500 border-green-500 hover:bg-green-500">Done</button> -->
         <router-link :to="`/item/${todo_item.id}`"
@@ -22,7 +22,7 @@ const error = inject("error")
 
 // If length of todo item is over a specified number,
 // only the first few characters will be shown
-let cutoffLength = 3
+let cutoffLength = 70
 const snippet = computed(() => {
     let itemDesc = props.todo_item.todo_desc
     if (itemDesc.length > cutoffLength) {

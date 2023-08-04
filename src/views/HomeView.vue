@@ -5,7 +5,7 @@
 
 
       <div class="mb-4">
-        <h1 class="text-grey-darkest">Todo List</h1>
+        <h1 class="text-2xl font-bold text-grey-darkest">Todo List</h1>
 
         <form @submit.prevent="addNewTodo" class="flex mt-4">
           <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
