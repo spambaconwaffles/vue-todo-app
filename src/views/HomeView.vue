@@ -9,7 +9,7 @@
 
         <form @submit.prevent="addNewTodo" class="flex mt-4">
           <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
-            placeholder="Add Todo" v-model="new_Todo">
+            placeholder="Add Todo" v-model="new_Todo" required>
           <button type="submit"
             class="flex-no-shrink p-2 border-2 rounded text-teal-500 border-teal-500 hover:text-white hover:bg-teal-500">Add</button>
         </form>
@@ -66,7 +66,7 @@ const addNewTodo = async () => {
           "Content-Type": "application/json",
         },
         // remember to stringify before sending
-        body: JSON.stringify({ 'todo_item': new_Todo.value })
+        body: JSON.stringify({ 'todo_desc': new_Todo.value })
       })
 
       if (!res.ok) {

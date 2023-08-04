@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
-import ToDoItem from '../views/ToDoItem.vue'
+import UpdateToDoItem from '../views/UpdateToDoItem.vue'
+import NotFound from '../views/NotFound.vue'
+
 
 const routes = [
   {
@@ -16,8 +18,19 @@ const routes = [
   },
   {
     path: "/item/:todo_id",
-    name: "ToDoItem",
-    component: ToDoItem
+    name: "UpdateToDoItem",
+    component: UpdateToDoItem
+  },
+  // redirect
+  {
+    path: "/todolist",
+    redirect: "/"
+  },
+  // catchall 404
+  {
+    path: "/:catchAll(.*)", //catches any route not catched by the other route objects
+    name: 'NotFound',
+    component: NotFound
   }
 ]
 
