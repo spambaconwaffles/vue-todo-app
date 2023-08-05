@@ -54,7 +54,7 @@ onMounted(async () => {
   try {
     let data = await fetch(`http://localhost:3000/todoitems/${route.params.todo_id}`)
     if (!data.ok) {
-      throw Error(f`Failed to fetch item with id: ${route.params.todo_id}`)
+      throw Error(`Failed to fetch item with id: ${route.params.todo_id}`)
     }
     // convert to json to access the data
     const singleTodoData = await data.json()
@@ -63,7 +63,7 @@ onMounted(async () => {
     // If it doesn't, redirect to 404 page
     if (singleTodoData.length == 0) {
       router.push("/NotFound")
-      throw Error(`Item with id: ${route.params.todo_id} does not exist in database`)
+      throw Error(`Item with id: ${route.params.todo_id} does not exist or is already completed`)
     } 
 
     // Else if there's data, the input's value will be the item's current

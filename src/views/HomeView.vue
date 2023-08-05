@@ -51,7 +51,7 @@ provide("todo_list", todo_list) // make it accessible to SingleItem for delete a
 
 onMounted(async () => {
   try {
-    let data = await fetch("http://localhost:3000/todoitems")
+    let data = await fetch("http://localhost:3000/fetchallItems")
     if (!data.ok) {
       throw Error("Failed to fetch todo list data")
     }
