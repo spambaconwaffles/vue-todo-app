@@ -10,6 +10,13 @@
         <form @submit.prevent="addNewTodo" class="flex mt-4">
           <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
             placeholder="Add Todo" v-model="new_Todo" required>
+          <div class="w-full">
+            <label  class="mr-3" for="doneBy">To Do By:</label>
+            <!-- Deadline can be optional -->
+            <input class="shadow appearance-none border rounded py-2 px-3 text-grey-darker" 
+                    type="date" id="doneBy"
+                    :min="minDate" v-model="new_doneByDate">
+          </div>
           <button type="submit"
             class="flex-no-shrink p-2 border-2 rounded text-teal-500 border-teal-500 hover:text-white hover:bg-teal-500">Add</button>
         </form>
@@ -34,6 +41,9 @@ import { useToast } from "vue-toastification"
 const error = inject("error")
 
 const toast = useToast()
+
+// Get current date in yyyy-mm-dd format to set min date input
+const minDate = new Date().toISOString().split('T')[0]
 
 // Fetch data and load it to todo_list ref
 const todo_list = ref([])
@@ -60,6 +70,7 @@ onMounted(async () => {
 
 // Add new todo item
 const new_Todo = ref("")
+const new_doneByDate = ref("")
 
 const addNewTodo = async () => {
   if (new_Todo.value !== '') {
