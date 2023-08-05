@@ -5,20 +5,20 @@
 
 
       <div class="mb-4">
-        <h1 class="text-2xl font-bold text-grey-darkest">Todo List</h1>
+        <h1 class="text-2xl font-bold">Todo List</h1>
 
         <form @submit.prevent="addNewTodo" class="flex mt-4">
-          <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 text-grey-darker"
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4"
             placeholder="Add Todo" v-model="new_Todo" required>
           <div class="w-full">
             <label  class="mr-3" for="doneBy">To Do By:</label>
             <!-- Deadline can be optional -->
-            <input class="shadow appearance-none border rounded py-2 px-3 text-grey-darker" 
+            <input class="shadow appearance-none border rounded py-2 px-3" 
                     type="date" id="doneBy"
                     :min="minDate" v-model="new_doneByDate">
           </div>
           <button type="submit"
-            class="flex-no-shrink p-2 border-2 rounded text-teal-500 border-teal-500 hover:text-white hover:bg-teal-500">Add</button>
+            class="p-2 border-2 rounded text-teal-500 border-teal-500 hover:text-white hover:bg-teal-500">Add</button>
         </form>
       </div>
 
@@ -81,7 +81,10 @@ const addNewTodo = async () => {
           "Content-Type": "application/json",
         },
         // remember to stringify before sending
-        body: JSON.stringify({ 'todo_desc': new_Todo.value })
+        body: JSON.stringify({ 
+          'todo_desc': new_Todo.value,
+          'doneBy': new_doneByDate.value
+       })
       })
 
       if (!res.ok) {
@@ -93,8 +96,9 @@ const addNewTodo = async () => {
       const resData = await res.json()
 
       // id is needed to specify item to update or delete
-      todo_list.value.push({ id: resData.insertId, todo_desc: new_Todo.value })
+      todo_list.value.push({ id: resData.insertId, todo_desc: new_Todo.value, doneBy: new_doneByDate.value })
       new_Todo.value = ""
+      new_doneByDate.value = ""
       toast.success("Successfully added an item")
     }
     catch (err) {

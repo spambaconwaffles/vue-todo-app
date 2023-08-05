@@ -6,6 +6,13 @@
         <h1 class="text-xl text-grey-darkest">Update item with id: {{ $route.params.todo_id }}</h1>
         <form @submit.prevent="updateTodo" class="mt-4">
           <input class=" w-full shadow border rounded py-2 px-3 text-grey-darker" v-model="curr_todo" required>
+          <div class="w-full">
+            <label  class="mr-3" for="doneBy">To Do By:</label>
+            <!-- Deadline can be optional -->
+            <input class="shadow appearance-none border rounded py-2 px-3" 
+                    type="date" id="doneBy"
+                    :min="minDate" v-model="curr_doneByDate">
+          </div>
           <div class="flex flex-col md:flex-row md:justify-end  mt-4">
             <router-link :to="{ name: 'home' }"
               class="p-2 mt-3 md:mr-2 border-2 rounded text-center text-yellow-500 border-yellow-500 hover:text-white hover:bg-yellow-500">Exit
@@ -35,7 +42,11 @@ const toast = useToast()
 
 const error = inject("error")
 
+// Get current date in yyyy-mm-dd format to set min date input
+const minDate = new Date().toISOString().split('T')[0]
+
 const curr_todo = ref("")
+const curr_doneByDate = ref("")
 
 // Fetch todo item from DB by specified item in route params
 // To allow users to see the current value of the todo item
@@ -58,7 +69,9 @@ onMounted(async () => {
     // Else if there's data, the input's value will be the item's current
     // value fetched from DB
     curr_todo.value = singleTodoData[0].todo_desc
-    console.log("Value fetched: ", curr_todo.value)
+    curr_doneByDate.value = singleTodoData[0].doneBy
+
+    console.log("Value fetched: ", curr_todo.value, curr_doneByDate.value)
 
   }
   catch (err) {
@@ -74,7 +87,7 @@ onMounted(async () => {
 
 // Update db with new todo 
 const updateTodo = async () => {
-  console.log("Update value: ", curr_todo.value)
+  console.log("Update value: ", curr_todo.value, curr_doneByDate.value)
 
   if (curr_todo !== "") {
     try {
@@ -84,7 +97,10 @@ const updateTodo = async () => {
           "Content-Type": "application/json",
         },
         // remember to stringify before sending
-        body: JSON.stringify({ 'todo_desc': curr_todo.value })
+        body: JSON.stringify({ 
+          'todo_desc': curr_todo.value,
+          'doneBy': curr_doneByDate.value
+        })
       })
 
       if (!res.ok) {
