@@ -13,12 +13,14 @@
 
 <script setup>
 
-import { ref, computed, defineProps, inject } from 'vue';
+import { computed, defineProps, inject } from 'vue';
+import { useToast } from "vue-toastification"
 
 const props = defineProps(["todo_item"])
 
 
 const error = inject("error")
+const toast = useToast()
 
 // If length of todo item is over a specified number,
 // only the first few characters will be shown
@@ -57,11 +59,13 @@ const removeTodo = async () => {
         todo_list.value = todo_list.value.filter((item) => {
             return item.id !== deleteId
         })
+        toast.success(`Successfully deleted item ${deleteId}`)
 
     }
     catch (err) {
         error.value = err.message
         console.log(error.value)
+        toast.error(`Error: ${error.value}`)
     }
 }
 

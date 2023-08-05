@@ -26,9 +26,12 @@
 <script setup>
 import { ref, onMounted, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useToast } from "vue-toastification"
+
 
 const route = useRoute()
 const router = useRouter()
+const toast = useToast()
 
 const error = inject("error")
 
@@ -61,6 +64,8 @@ onMounted(async () => {
   catch (err) {
     error.value = err.message
     console.log(error.value)
+    toast.error(`Error: ${error.value}`)
+
   }
 })
 
@@ -83,8 +88,10 @@ const updateTodo = async () => {
       })
 
       if (!res.ok) {
-        throw Error("Failed to update item")
+        throw Error(`Failed to update item ${route.params.todo_id}`)
       }
+
+      toast.success(`Successfully updated item ${route.params.todo_id}`)
 
       // redirect back to todo list page
       router.push({ name: 'home' })
@@ -92,6 +99,8 @@ const updateTodo = async () => {
     catch (err) {
       error.value = err.message
       console.log(error.value)
+      toast.error(`Error: ${error.value}`)
+
     }
   }
 }

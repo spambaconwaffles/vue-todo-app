@@ -27,11 +27,13 @@
 <script setup>
 import { onMounted, ref, provide, inject } from "vue"
 import TodoList from "../components/TodoList.vue"
+import { useToast } from "vue-toastification"
 
 // Get error ref
 // values will be passed to error when there's an error
 const error = inject("error")
 
+const toast = useToast()
 
 // Fetch data and load it to todo_list ref
 const todo_list = ref([])
@@ -41,7 +43,7 @@ onMounted(async () => {
   try {
     let data = await fetch("http://localhost:3000/todoitems")
     if (!data.ok) {
-      throw Error("Failed to fetch data")
+      throw Error("Failed to fetch todo list data")
     }
     todo_list.value = await data.json()
     console.log(todo_list.value)
@@ -49,6 +51,7 @@ onMounted(async () => {
   catch (err) {
     error.value = err.message
     console.log(error.value)
+    toast.error(`Error: ${error.value}`)
   }
 })
 
@@ -81,10 +84,12 @@ const addNewTodo = async () => {
       // id is needed to specify item to update or delete
       todo_list.value.push({ id: resData.insertId, todo_desc: new_Todo.value })
       new_Todo.value = ""
+      toast.success("Successfully added an item")
     }
     catch (err) {
       error.value = err.message
       console.log(error.value)
+      toast.error(`Error: ${error.value}`)
     }
   }
 }
