@@ -1,10 +1,11 @@
 <template>
     <li class="flex mb-4 items-center">
-        <p class="w-full truncate ...">{{ snippet }}</p>
+        <p class="w-full truncate ..." :class="{ 'line-through': completedBool }">{{ snippet }}</p>
         <p class="w-full" v-show="todo_item.doneBy !== ''">By: {{ todo_item.doneBy }}</p>
+
         <button @click="toggleCompleted"
             class="p-2 ml-4 mr-2 border-2 rounded hover:text-white text-green-500 border-green-500 hover:bg-green-500">Done</button>
-        <router-link :to="`/item/${todo_item.id}`"
+        <router-link :to="`/item/${todo_item.id}`" v-show="!completedBool"
             class="p-2 ml-2 border-2 rounded text-yellow-500 border-yellow-500 hover:text-white hover:bg-yellow-500">Update</router-link>
         <button @click="removeTodo"
             class="p-2 ml-2 border-2 rounded text-red-500 border-red-500 hover:text-white hover:bg-red-500">Remove</button>
@@ -34,9 +35,13 @@ const snippet = computed(() => {
     return itemDesc
 })
 
+const completedBool = computed(() => {
+    return Boolean(props.todo_item.completed)
+})
 
 
-// Inject todo_list ref from parent component to access
+
+// Inject todo_list ref from parent component to access to change value
 // for delete and update
 const todo_list = inject("todo_list")
 
@@ -44,7 +49,7 @@ const todo_list = inject("todo_list")
 const toggleCompleted = async () => {
     try {
 
-        // First find the item in todo_list ref and toggle its completed propety
+        // First MUST find the item in todo_list ref and toggle its completed propety
         todo_list.value.forEach((item) => {
             if (item.id === props.todo_item.id) {
                 item.completed = Number(!Boolean(item.completed))
@@ -53,24 +58,24 @@ const toggleCompleted = async () => {
             }
         })
 
+        const res = await fetch(`http://localhost:3000/updateCompletedState/${props.todo_item.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                // The toggled value can then be obtained from props as it is passed down 
+                // from the todo_list ref that's already changed, and the correct value can be updated
+                'completed': props.todo_item.completed
+            })
+        })
+
+        if (!res.ok) {
+            throw Error(`Failed to toggle item ${props.todo_item.id}`)
+        }
 
 
-        // const res = await fetch(`http://localhost:3000/updateCompletedState/${route.params.todo_id}`, {
-        //     method: "PUT",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //     },
-        //     // remember to stringify before sending
-        //     body: JSON.stringify({
-        //         'completed': curr_todo.value
-        //     })
-        // })
-
-        // if (!res.ok) {
-        //     throw Error(`Failed to toggle item ${props.todo_item.id}`)
-        // }
-
-        // toast.success(`Successfully toggled item ${props.todo_item.id}`)
+        toast.success(`Successfully toggled item ${props.todo_item.id}`, { timeout: 1000 })
 
     }
     catch (err) {

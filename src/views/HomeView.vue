@@ -1,21 +1,17 @@
 <template>
-  <div class="h-100 w-full flex items-center justify-center bg-teal-lightest font-sans">
-
+  <div class="h-100 w-full flex flex-col lg:flex-row items-start justify-center bg-teal-lightest font-sans">
     <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
-
-
       <div class="mb-4">
         <h1 class="text-2xl font-bold">Todo List</h1>
 
         <form @submit.prevent="addNewTodo" class="flex mt-4">
-          <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4"
-            placeholder="Add Todo" v-model="new_Todo" required>
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4" placeholder="Add Todo"
+            v-model="new_Todo" required>
           <div class="w-full">
-            <label  class="mr-3" for="doneBy">To Do By:</label>
+            <label class="mr-3" for="doneBy">To Do By:</label>
             <!-- Deadline can be optional -->
-            <input class="shadow appearance-none border rounded py-2 px-3" 
-                    type="date" id="doneBy"
-                    :min="minDate" v-model="new_doneByDate">
+            <input class="shadow appearance-none border rounded py-2 px-3" type="date" id="doneBy" :min="minDate"
+              v-model="new_doneByDate">
           </div>
           <button type="submit"
             class="p-2 border-2 rounded text-teal-500 border-teal-500 hover:text-white hover:bg-teal-500">Add</button>
@@ -25,14 +21,30 @@
 
       <!-- todo list -->
       <div v-if="todo_list.length">
-        <TodoList :todo_list="todo_list" />
+        <TodoList :todo_list="todo_list_notdone" />
       </div>
+
     </div>
+
+    <!-- Done list -->
+    <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
+
+      <div class="mb-4">
+        <h1 class="text-2xl font-bold">Done List</h1>
+        <div v-if="todo_list.length">
+          <TodoList :todo_list="todo_list_done" />
+        </div>
+      </div>
+
+    </div>
+
+
+
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, provide, inject } from "vue"
+import { onMounted, ref, provide, inject, computed } from "vue"
 import TodoList from "../components/TodoList.vue"
 import { useToast } from "vue-toastification"
 
@@ -48,6 +60,20 @@ const minDate = new Date().toISOString().split('T')[0]
 // Fetch data and load it to todo_list ref
 const todo_list = ref([])
 provide("todo_list", todo_list) // make it accessible to SingleItem for delete and update
+
+// create done and not done lists
+const todo_list_notdone = computed(() => {
+  return todo_list.value.filter((item) => {
+    return item.completed === 0
+  })
+})
+
+const todo_list_done = computed(() => {
+  return todo_list.value.filter((item) => {
+    return item.completed === 1
+  })
+})
+
 
 onMounted(async () => {
   try {
@@ -81,10 +107,10 @@ const addNewTodo = async () => {
           "Content-Type": "application/json",
         },
         // remember to stringify before sending
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           'todo_desc': new_Todo.value,
           'doneBy': new_doneByDate.value
-       })
+        })
       })
 
       if (!res.ok) {
