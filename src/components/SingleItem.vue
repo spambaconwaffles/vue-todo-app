@@ -1,21 +1,24 @@
 <template>
-    <li class="flex mb-4 items-center">
+    <div class="flex mb-4 items-center">
+
         <p class="w-full truncate ..." :class="{ 'line-through': completedBool }">{{ snippet }}</p>
-        <p class="w-full" v-show="todo_item.doneBy !== ''">By: {{ todo_item.doneBy }}</p>
+        <p class="w-full mr-4 text-right" v-show="todo_item.doneBy !== ''">By: {{ todo_item.doneBy }}</p>
+
 
         <button @click="toggleCompleted"
-            class="p-2 ml-4 mr-2 border-2 rounded hover:text-white text-green-500 border-green-500 hover:bg-green-500">Done</button>
+            class="p-2 border-2 rounded hover:text-white text-green-500 border-green-500 hover:bg-green-500">{{
+                completedBool ? "Undo" : "Done" }}</button>
         <router-link :to="`/item/${todo_item.id}`" v-show="!completedBool"
             class="p-2 ml-2 border-2 rounded text-yellow-500 border-yellow-500 hover:text-white hover:bg-yellow-500">Update</router-link>
         <button @click="removeTodo"
             class="p-2 ml-2 border-2 rounded text-red-500 border-red-500 hover:text-white hover:bg-red-500">Remove</button>
-    </li>
+    </div>
 </template>
 
 
 <script setup>
 
-import { computed, defineProps, inject } from 'vue';
+import { computed, inject } from 'vue';
 import { useToast } from "vue-toastification"
 
 const props = defineProps(["todo_item"])

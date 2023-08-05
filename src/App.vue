@@ -20,7 +20,7 @@
     <!-- Links -->
     <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto"
     :class="{'block': mobileMenuOpen, 'hidden': !mobileMenuOpen}">
-      <div class="lg: flex-grow">
+      <div class="lg:flex-grow">
         <router-link :to="{ name: 'home' }" class="rounded-md border-2 lg:border-0 border-slate-300 p-2 block mt-3 lg:mt-0 lg:inline-block">Home</router-link>
         <div class="hidden lg:inline-block mx-2 p-2">|</div>
         <router-link :to="{ name: 'about' }" class="rounded-md border-2 lg:border-0 border-slate-300 p-2 block  mt-3 lg:mt-0 lg:inline-block">About</router-link>

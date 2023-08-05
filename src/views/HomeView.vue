@@ -1,20 +1,20 @@
 <template>
-  <div class="h-100 w-full flex flex-col lg:flex-row items-start justify-center bg-teal-lightest font-sans">
-    <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
+  <div class="h-100 w-full items-start  lg:flex lg:flex-row lg:justify-center bg-teal-lightest font-sans">
+    <div class="bg-white rounded shadow p-6 mx-0 my-4 lg:mx-4 w-full lg:w-1/2 lg:max-w-2xl">
       <div class="mb-4">
         <h1 class="text-2xl font-bold">Todo List</h1>
 
-        <form @submit.prevent="addNewTodo" class="flex mt-4">
-          <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4" placeholder="Add Todo"
+        <form @submit.prevent="addNewTodo" class="md:flex mt-4 mb-7">
+          <input class="shadow appearance-none border rounded w-full py-2 px-3 mr-4 mb-4 md:mb-0" placeholder="Add Todo"
             v-model="new_Todo" required>
-          <div class="w-full">
-            <label class="mr-3" for="doneBy">To Do By:</label>
+          <div class="md:flex md:flex-row items-center w-full mb-6 md:mb-0 mr-3">
+            <label class="block mb-2 mr-3"  for="doneBy">By:</label>
             <!-- Deadline can be optional -->
-            <input class="shadow appearance-none border rounded py-2 px-3" type="date" id="doneBy" :min="minDate"
+            <input class="w-full shadow appearance-none border rounded py-2 px-3" type="date" id="doneBy" :min="minDate"
               v-model="new_doneByDate">
           </div>
           <button type="submit"
-            class="p-2 border-2 rounded text-teal-500 border-teal-500 hover:text-white hover:bg-teal-500">Add</button>
+            class="w-full md:w-auto  p-2 border-2 rounded text-teal-500 border-teal-500 hover:text-white hover:bg-teal-500">Add</button>
         </form>
       </div>
 
@@ -27,10 +27,10 @@
     </div>
 
     <!-- Done list -->
-    <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
+    <div class="bg-white rounded shadow p-6 mx-0 my-4 lg:mx-4 w-full lg:w-1/2 lg:max-w-2xl">
 
       <div class="mb-4">
-        <h1 class="text-2xl font-bold">Done List</h1>
+        <h1 class="text-2xl mb-7 font-bold">Done List</h1>
         <div v-if="todo_list.length">
           <TodoList :todo_list="todo_list_done" />
         </div>
@@ -122,7 +122,10 @@ const addNewTodo = async () => {
       const resData = await res.json()
 
       // id is needed to specify item to update or delete
-      todo_list.value.push({ id: resData.insertId, todo_desc: new_Todo.value, doneBy: new_doneByDate.value })
+      todo_list.value.push({ id: resData.insertId, 
+        todo_desc: new_Todo.value, 
+        doneBy: new_doneByDate.value,
+        completed: 0 })
       new_Todo.value = ""
       new_doneByDate.value = ""
       toast.success("Successfully added an item")
