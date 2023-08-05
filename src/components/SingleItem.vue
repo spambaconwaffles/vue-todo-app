@@ -43,19 +43,21 @@ const removeTodo = async () => {
         const deleteId = props.todo_item.id
         console.log("Deleting ", deleteId)
 
-        // remove item from todo_list ref
-        todo_list.value = todo_list.value.filter((item) => {
-            return item.id !== deleteId
-        })
-
         // Actually delete from db
         const res = await fetch(`http://localhost:3000/todoitems/${deleteId}`, {
             method: "DELETE"
         })
 
         if (!res.ok) {
-            throw Error("Error: Failed to remove item")
+            throw Error("Failed to remove item")
         }
+        
+        // remove item from todo_list ref only when item successfully deleted in
+        // backend
+        todo_list.value = todo_list.value.filter((item) => {
+            return item.id !== deleteId
+        })
+
     }
     catch (err) {
         error.value = err.message

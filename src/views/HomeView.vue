@@ -25,22 +25,23 @@
 </template>
 
 <script setup>
-import { onMounted, ref, provide } from "vue"
+import { onMounted, ref, provide, inject } from "vue"
 import TodoList from "../components/TodoList.vue"
+
+// Get error ref
+// values will be passed to error when there's an error
+const error = inject("error")
 
 
 // Fetch data and load it to todo_list ref
 const todo_list = ref([])
 provide("todo_list", todo_list) // make it accessible to SingleItem for delete and update
 
-const error = ref(null)
-provide("error", error)
-
 onMounted(async () => {
   try {
     let data = await fetch("http://localhost:3000/todoitems")
     if (!data.ok) {
-      throw Error("No data available")
+      throw Error("Failed to fetch data")
     }
     todo_list.value = await data.json()
     console.log(todo_list.value)
@@ -70,7 +71,7 @@ const addNewTodo = async () => {
       })
 
       if (!res.ok) {
-        throw Error("No data available")
+        throw Error("Failed to add new item")
       }
 
       // Even if it's POST, need to .json() to get its response

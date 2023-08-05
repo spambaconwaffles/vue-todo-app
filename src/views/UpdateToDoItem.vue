@@ -3,7 +3,7 @@
     <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
 
       <div class="mb-4">
-        <h1 class="text-grey-darkest">Update item with id: {{ $route.params.todo_id }}</h1>
+        <h1 class="text-xl text-grey-darkest">Update item with id: {{ $route.params.todo_id }}</h1>
         <form @submit.prevent="updateTodo" class="mt-4">
           <input class=" w-full shadow border rounded py-2 px-3 text-grey-darker" v-model="curr_todo" required>
           <div class="flex flex-col md:flex-row md:justify-end  mt-4">
@@ -24,23 +24,39 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, inject } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const curr_todo = ref("")
-const error = ref(null)
-
 const route = useRoute()
+const router = useRouter()
+
+const error = inject("error")
+
+const curr_todo = ref("")
+
+// Fetch todo item from DB by specified item in route params
+// To allow users to see the current value of the todo item
 onMounted(async () => {
   try {
     let data = await fetch(`http://localhost:3000/todoitems/${route.params.todo_id}`)
     if (!data.ok) {
-      throw Error("No data available")
+      throw Error(f`Failed to fetch item with id: ${route.params.todo_id}`)
     }
-    const test = await data.json()
-    curr_todo.value = test[0].todo_desc
+    // convert to json to access the data
+    const singleTodoData = await data.json()
 
+    // Check if the item actually exists in the DB
+    // If it doesn't, redirect to 404 page
+    if (singleTodoData.length == 0) {
+      router.push("/NotFound")
+      throw Error(`Item with id: ${route.params.todo_id} does not exist in database`)
+    } 
+
+    // Else if there's data, the input's value will be the item's current
+    // value fetched from DB
+    curr_todo.value = singleTodoData[0].todo_desc
     console.log("Value fetched: ", curr_todo.value)
+
   }
   catch (err) {
     error.value = err.message
@@ -48,8 +64,10 @@ onMounted(async () => {
   }
 })
 
+
+
+
 // Update db with new todo 
-const router = useRouter()
 const updateTodo = async () => {
   console.log("Update value: ", curr_todo.value)
 
@@ -65,11 +83,11 @@ const updateTodo = async () => {
       })
 
       if (!res.ok) {
-        throw Error("Error: Update failed")
+        throw Error("Failed to update item")
       }
 
       // redirect back to todo list page
-      router.push({ name: 'home'})
+      router.push({ name: 'home' })
     }
     catch (err) {
       error.value = err.message

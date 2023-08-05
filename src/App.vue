@@ -31,7 +31,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, provide } from 'vue';
+
+// Create error ref that'll be used by different components
+const error = ref(null)
+provide("error", error)
+
 
 const mobileMenuOpen = ref(false)
 
