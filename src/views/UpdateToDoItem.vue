@@ -5,11 +5,11 @@
       <div class="mb-4">
         <h1 class="text-xl text-grey-darkest">Update item with id: {{ $route.params.todo_id }}</h1>
         <form @submit.prevent="updateTodo" class="mt-4">
-          <input class=" w-full shadow border rounded py-2 px-3 text-grey-darker" v-model="curr_todo" required>
+          <input class="w-full shadow border rounded py-2 px-3 mb-4 text-grey-darker" v-model="curr_todo" required>
           <div class="w-full">
-            <label  class="mr-3" for="doneBy">To Do By:</label>
+            <label  class="block mr-3 mb-2" for="doneBy">To Do By:</label>
             <!-- Deadline can be optional -->
-            <input class="shadow appearance-none border rounded py-2 px-3" 
+            <input class="w-full shadow appearance-none border rounded py-2 px-3" 
                     type="date" id="doneBy"
                     :min="minDate" v-model="curr_doneByDate">
           </div>
